@@ -1,26 +1,12 @@
 from django.db import models
 from django.contrib.auth.hashers import make_password, check_password
-
+# importar modelo user
+from django.contrib.auth.models import User
 #importar modelo user, no definirlo aqui
 
+# class User(User):
+
 # Create Models Here
-
-class User(models.Model):
-    is_headhunter = models.BooleanField(default=False)
-    name = models.CharField(max_length=50)
-    email = models.EmailField(max_length=70)
-    password = models.CharField(max_length=128)  # Espacio suficiente para almacenar contraseñas cifradas
-
-    def set_password(self, raw_password):
-        """Configura la contraseña utilizando un hash seguro."""
-        self.password = make_password(raw_password)
-
-    def check_password(self, raw_password):
-        """Verifica si la contraseña ingresada coincide con la almacenada."""
-        return check_password(raw_password, self.password)
-
-    def __str__(self):
-        return self.name
 
 #user test crear realcionado con test 
 class Test(models.Model):
@@ -33,16 +19,16 @@ class Test(models.Model):
     #soft skills relacion con tabla grupo montse
     #hard skills relacion con tabla grupo montse
 
-
-
-
-
+class QuestionType(models.Model):
+    code = models.CharField( max_length=50)
+    name = models.CharField(max_lenght=50)
+    def _str_(self):
+        return self.nombre
+    
 class Question(models.Model):
     test = models.ForeignKey(Test, on_delete=models.CASCADE, related_name="questions")
     content = models.TextField()
-    question_type = models.CharField(
-        max_length=50, choices=[("MCQ", "Multiple Choice"), ("TF", "True/False")]
-    )
+    question_type = models.ForeignKey(QuestionType, on_delete=models.CASCADE)
     options = models.JSONField()
     correct_answer = models.CharField(max_length=200)
 
